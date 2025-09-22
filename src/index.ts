@@ -1,5 +1,6 @@
 import { readConfig } from "./config.js";
-import { handlerLogin, runCommand, type CommandsRegistry } from "./commands.js"
+import { runCommand, registerCommand, type CommandsRegistry } from "./commands/commands.js"
+import { handlerLogin } from "./commands/login.js";
 
 function main() {
   const cfg = readConfig();
@@ -7,6 +8,8 @@ function main() {
   const registry: CommandsRegistry = {
     "login": handlerLogin
   }
+
+  registerCommand(registry, "login", handlerLogin);
 
   const input = process.argv.slice(2);
   if (!input) {
