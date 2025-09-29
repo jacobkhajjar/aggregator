@@ -1,5 +1,5 @@
 import { defineConfig } from "drizzle-kit";
-import { readConfig } from "./src/config.js"
+import { readConfig } from "/home/jacob/BootDev/projects/aggregator/src/config.ts"
 
 
 export default defineConfig({
