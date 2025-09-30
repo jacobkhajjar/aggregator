@@ -1,4 +1,12 @@
-type CommandHandler = (cmdName: string, ...args: string[]) => Promise<void>;
+import { User } from "src/lib/db/schema.js";
+
+export type CommandHandler = (cmdName: string, ...args: string[]) => Promise<void>;
+
+export type UserCommandHandler = (
+    cmdName: string,
+    user: User,
+    ...args: string[]
+) => Promise<void> | void;
 
 export type CommandsRegistry = Record<string, CommandHandler>;
 
@@ -7,7 +15,7 @@ export async function registerCommand(
     cmdName: string,
     handler: CommandHandler
 ) {
-    registry[cmdName] = handler
+    registry[cmdName] = handler;
 }
 
 export async function runCommand(
@@ -19,5 +27,6 @@ export async function runCommand(
     if (!handler) {
         throw new Error(`Command ${cmdName} not in registry`);
     }
+
     await handler(cmdName, ...args);
 }

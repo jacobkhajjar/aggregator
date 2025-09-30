@@ -1,5 +1,4 @@
-import { readConfig } from "src/config.js";
-import { getUser, getUserFromId } from "src/lib/db/queries/users.js";
+import { getUserFromId } from "src/lib/db/queries/users.js";
 import { createFeed, createFeedFollow, getFeeds } from "src/lib/db/queries/feeds.js";
 import type { User, Feed } from "src/lib/db/schema.js";
 
@@ -21,18 +20,15 @@ export async function handlerFeeds() {
     }
 }
 
-export async function handlerAddFeed(cmdName: string, ...args: string[]) {
+export async function handlerAddFeed(cmdName: string, user: User, ...args: string[]) {
     if (args.length !== 2) {
-        throw new Error("usage: addfeed <name> <url>")
+        throw new Error("usage: addfeed <feed name> <url>")
     }
 
-    const userName = readConfig().currentUserName;
-    const user = await getUser(userName);
-
-    const name = args[0];
+    const feedName = args[0];
     const url = args[1];
 
-    const feed = await createFeed(name, url, user.id);
+    const feed = await createFeed(feedName, url, user.id);
     if (!feed) {
         throw new Error("failed to create feed")
     }

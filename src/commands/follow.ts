@@ -1,15 +1,10 @@
-import { readConfig } from "src/config.js";
-import { getUser } from "src/lib/db/queries/users.js";
-import { createFeedFollow, getFeedByUrl, getFeedFollowsForUser } from "src/lib/db/queries/feeds.js";
-import type { User, Feed } from "src/lib/db/schema.js";
+import { createFeedFollow, getFeedByUrl, getFeedFollowsForUser, unfollow } from "src/lib/db/queries/feeds.js";
+import { feedFollows, type User } from "src/lib/db/schema.js";
 
-export async function handlerFollow(cmdName: string, ...args: string[]) {
+export async function handlerFollow(cmdName: string, user: User, ...args: string[]) {
     if (args.length !== 1) {
         throw new Error("usage: follow <url>")
     }
-
-    const userName = readConfig().currentUserName;
-    const user = await getUser(userName);
 
     const url = args[0];
 
@@ -25,15 +20,13 @@ export async function handlerFollow(cmdName: string, ...args: string[]) {
     console.log(`User ${user.name} is now following feed ${feed.name}`);
 }
 
-export async function handlerFollowing() {
-   
-    const userName = readConfig().currentUserName;
-    const user = await getUser(userName);
+export async function handlerFollowing(cmdName: string, user: User) {
 
     const feeds = await getFeedFollowsForUser(user);
 
     if (!feeds || feeds.length === 0) {
-        throw new Error("No feeds found for user");
+        console.log("No feeds found for user");
+        return;
     }
 
     console.log(`Found ${feeds.length} feeds for user ${user.name}`)
@@ -45,4 +38,26 @@ export async function handlerFollowing() {
         console.log(`${i}. ${feed.feeds.name}`);
         i++;
     }
+}
+
+export async function handlerUnfollow(cmdName: string, user: User, ...args: string[]) {
+    if (args.length !== 1) {
+        throw new Error("Usage: unfollow <feed url>");
+    }
+
+    const url = args[0];
+    const feed = await getFeedByUrl(url);
+
+    if (!feed) {
+        throw new Error("Error unfollowing feed: feed not found");
+    }
+
+    const deleted = await unfollow(feed.id, user.id);
+
+    if (!deleted || deleted === 0) {
+        console.log("Error unfollowing feed: user not following table");
+        return;
+    }
+
+    console.log(`Unfollowed ${deleted} feeds ${feed.name}`);
 }

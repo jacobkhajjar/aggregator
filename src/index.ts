@@ -3,23 +3,22 @@ import { runCommand, registerCommand, type CommandsRegistry } from "./commands/c
 import { handlerLogin, handlerRegister, handlerReset, handlerUsers } from "./commands/users.js";
 import { handlerAgg } from "./commands/aggregate.js";
 import { handlerAddFeed, handlerFeeds } from "./commands/feeds.js";
-import { handlerFollow, handlerFollowing } from "./commands/follow.js";
+import { handlerFollow, handlerFollowing, handlerUnfollow } from "./commands/follow.js";
+import { middlewareLoggedIn } from "./middleware.js";
 
 async function main() {
-
 
   try {
 
     const cfg = readConfig();
   
-    const registry: CommandsRegistry = {
-      "login": handlerLogin
-    }
+    const registry: CommandsRegistry = { }
 
-    registerCommand(registry, "addfeed", handlerAddFeed)
+    registerCommand(registry, "addfeed", middlewareLoggedIn(handlerAddFeed))
     registerCommand(registry, "feeds", handlerFeeds);
-    registerCommand(registry, "follow", handlerFollow);
-    registerCommand(registry, "following", handlerFollowing)
+    registerCommand(registry, "follow", middlewareLoggedIn(handlerFollow));
+    registerCommand(registry, "unfollow", middlewareLoggedIn(handlerUnfollow))
+    registerCommand(registry, "following", middlewareLoggedIn(handlerFollowing))
     registerCommand(registry, "agg", handlerAgg);
     registerCommand(registry, "login", handlerLogin);
     registerCommand(registry, "register", handlerRegister);
