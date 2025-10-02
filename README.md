@@ -1,6 +1,6 @@
 # AggreGATOR
 
-This program will log, update and browse RSS feeds.
+This program will log, update and browse RSS feeds. Nicknamed gator.
 
 ## Commands
 
