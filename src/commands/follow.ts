@@ -22,7 +22,7 @@ export async function handlerFollow(cmdName: string, user: User, ...args: string
 
 export async function handlerFollowing(cmdName: string, user: User) {
 
-    const feeds = await getFeedFollowsForUser(user);
+    const feeds = await getFeedFollowsForUser(user.id);
 
     if (!feeds || feeds.length === 0) {
         console.log("No feeds found for user");

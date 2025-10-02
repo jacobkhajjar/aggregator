@@ -5,6 +5,7 @@ import { handlerAgg } from "./commands/aggregate.js";
 import { handlerAddFeed, handlerFeeds } from "./commands/feeds.js";
 import { handlerFollow, handlerFollowing, handlerUnfollow } from "./commands/follow.js";
 import { middlewareLoggedIn } from "./middleware.js";
+import { handlerBrowse } from "./commands/browse.js";
 
 async function main() {
 
@@ -14,12 +15,13 @@ async function main() {
   
     const registry: CommandsRegistry = { }
 
-    registerCommand(registry, "addfeed", middlewareLoggedIn(handlerAddFeed))
+    registerCommand(registry, "addfeed", middlewareLoggedIn(handlerAddFeed));
     registerCommand(registry, "feeds", handlerFeeds);
     registerCommand(registry, "follow", middlewareLoggedIn(handlerFollow));
-    registerCommand(registry, "unfollow", middlewareLoggedIn(handlerUnfollow))
-    registerCommand(registry, "following", middlewareLoggedIn(handlerFollowing))
+    registerCommand(registry, "unfollow", middlewareLoggedIn(handlerUnfollow));
+    registerCommand(registry, "following", middlewareLoggedIn(handlerFollowing));
     registerCommand(registry, "agg", handlerAgg);
+    registerCommand(registry, "browse", middlewareLoggedIn(handlerBrowse));
     registerCommand(registry, "login", handlerLogin);
     registerCommand(registry, "register", handlerRegister);
     registerCommand(registry, "users", handlerUsers);
